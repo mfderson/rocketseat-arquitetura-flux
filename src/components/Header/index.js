@@ -19,7 +19,7 @@ export default function Header() {
           <strong>Meu carrinho</strong>
           <span>3 itens</span>
         </div>
-        <MdShoppingBasket sizer={36} color="#FFF" />
+        <MdShoppingBasket size={36} color="#FFF" />
       </Cart>
     </Container>
   );
