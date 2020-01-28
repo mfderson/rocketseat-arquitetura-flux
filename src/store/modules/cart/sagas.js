@@ -1,18 +1,35 @@
-import { call, put, all, takeLatest } from 'redux-saga/effects';
+import { call, select, put, all, takeLatest } from 'redux-saga/effects';
 
 import api from '../../../services/api';
+import { formatPrice } from '../../../util/format';
 
-import { addToCartSuccess } from './actions';
+import { addToCartSuccess, updateAmount } from './actions';
 
 // Essa declaração de função com * quer dizer que vamos usar o generator, que é
 // uma funcionalidade do javascript
 // Equivalente a async function...Porém o generator é mais potente
 function* addToCart({ id }) {
-  // O yield funciona como o await
-  const response = yield call(api.get, `/products/${id}`);
+  const productExists = yield select(state =>
+    state.cart.find(p => p.id === id)
+  );
 
-  // Dispara uma action para o redux
-  yield put(addToCartSuccess(response.data));
+  if (productExists) {
+    const amount = productExists.amount + 1;
+
+    yield put(updateAmount(id, amount));
+  } else {
+    // O yield funciona como o await
+    const response = yield call(api.get, `/products/${id}`);
+
+    const data = {
+      ...response.data,
+      amount: 1,
+      priceFormatted: formatPrice(response.data.price),
+    };
+
+    // Dispara uma action para o redux
+    yield put(addToCartSuccess(data));
+  }
 }
 
 // Faz o bind de qual action quer ouvir para qual função quer disparar
