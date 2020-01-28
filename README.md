@@ -1,6 +1,6 @@
 ## Inicializando o projeto
 ```
-json server server.json -p 3333
+json-server server.json -p 3333
 yarn start
 ```
 
